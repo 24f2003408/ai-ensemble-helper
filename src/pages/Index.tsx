@@ -37,12 +37,18 @@ const Index = () => {
     setIsLoading(true);
     setHasResults(true);
     
-    // Initialize loading states
+    // Initialize loading states for all 10 models
     const loadingResponses: AIResponse[] = [
-      { modelName: "Claude 3 Sonnet", answer: "", isLoading: true },
-      { modelName: "GPT-4 Turbo", answer: "", isLoading: true },
-      { modelName: "Gemini Pro", answer: "", isLoading: true },
-      { modelName: "Mixtral 8x7B", answer: "", isLoading: true },
+      { modelName: "Claude 3.5 Sonnet", answer: "", isLoading: true },
+      { modelName: "GPT-4o", answer: "", isLoading: true },
+      { modelName: "Gemini Pro 1.5", answer: "", isLoading: true },
+      { modelName: "Llama 3.2 Vision", answer: "", isLoading: true },
+      { modelName: "Claude 3 Haiku", answer: "", isLoading: true },
+      { modelName: "GPT-4o Mini", answer: "", isLoading: true },
+      { modelName: "Llama 3.2 90B Vision", answer: "", isLoading: true },
+      { modelName: "Qwen 2 VL 72B", answer: "", isLoading: true },
+      { modelName: "Phi 3.5 Vision", answer: "", isLoading: true },
+      { modelName: "DeepSeek Chat", answer: "", isLoading: true },
     ];
     
     setResponses(loadingResponses);
@@ -90,7 +96,7 @@ const Index = () => {
               </h1>
             </div>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Get answers from multiple AI models simultaneously. Perfect for assignments, MCQs, and academic questions.
+              Get answers from 10 different AI models simultaneously. Perfect for assignments, MCQs, and academic questions.
             </p>
           </div>
           
@@ -112,7 +118,7 @@ const Index = () => {
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Get answers from multiple AI models simultaneously and find the best solution
+            Get answers from 10 different AI models simultaneously and find the best solution
           </p>
         </div>
 
@@ -123,9 +129,9 @@ const Index = () => {
               <div className="w-12 h-12 mx-auto mb-3 bg-primary/10 rounded-lg flex items-center justify-center">
                 <Brain className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-semibold mb-2">Multiple AI Models</h3>
+              <h3 className="font-semibold mb-2">10 AI Models</h3>
               <p className="text-sm text-muted-foreground">
-                Claude, GPT-4, Gemini, and Mixtral working together
+                Claude, GPT-4, Gemini, Llama, Qwen, and more working together
               </p>
             </div>
             <div className="text-center p-4">
@@ -158,7 +164,7 @@ const Index = () => {
         {hasResults && (
           <div className="space-y-6">
             {/* AI Responses */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {responses.map((response, index) => (
                 <AIResponseCard
                   key={`${response.modelName}-${index}`}

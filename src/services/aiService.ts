@@ -28,6 +28,36 @@ const AI_MODELS = [
     id: "meta-llama/llama-3.2-11b-vision-instruct",
     name: "Llama 3.2 Vision",
     displayName: "Llama 3.2 Vision"
+  },
+  {
+    id: "anthropic/claude-3-haiku",
+    name: "Claude 3 Haiku",
+    displayName: "Claude 3 Haiku"
+  },
+  {
+    id: "openai/gpt-4o-mini",
+    name: "GPT-4o Mini",
+    displayName: "GPT-4o Mini"
+  },
+  {
+    id: "meta-llama/llama-3.2-90b-vision-instruct",
+    name: "Llama 3.2 90B Vision",
+    displayName: "Llama 3.2 90B Vision"
+  },
+  {
+    id: "qwen/qwen-2-vl-72b-instruct",
+    name: "Qwen 2 VL 72B",
+    displayName: "Qwen 2 VL 72B"
+  },
+  {
+    id: "microsoft/phi-3.5-vision-instruct",
+    name: "Phi 3.5 Vision",
+    displayName: "Phi 3.5 Vision"
+  },
+  {
+    id: "deepseek/deepseek-chat",
+    name: "DeepSeek Chat",
+    displayName: "DeepSeek Chat"
   }
 ];
 
