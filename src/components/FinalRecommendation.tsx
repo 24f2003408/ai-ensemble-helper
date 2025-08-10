@@ -14,28 +14,38 @@ export default function FinalRecommendation({ responses }: FinalRecommendationPr
     return null;
   }
 
-  // Find consensus or best answer
+  // Find consensus or best answer with selected options
+  const optionCounts = validResponses.reduce((acc, response) => {
+    if (response.selectedOption) {
+      acc[response.selectedOption] = (acc[response.selectedOption] || 0) + 1;
+    }
+    return acc;
+  }, {} as Record<string, number>);
+
   const answerCounts = validResponses.reduce((acc, response) => {
     acc[response.answer] = (acc[response.answer] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
-  const mostCommonAnswer = Object.entries(answerCounts)
+  // Use option consensus if available, otherwise use answer consensus
+  const useOptionConsensus = Object.keys(optionCounts).length > 0;
+  const counts = useOptionConsensus ? optionCounts : answerCounts;
+  const mostCommonAnswer = Object.entries(counts)
     .sort(([,a], [,b]) => b - a)[0];
 
-  const consensusCount = mostCommonAnswer[1];
-  const totalResponses = validResponses.length;
-  const consensusPercentage = (consensusCount / totalResponses) * 100;
-
-  // If no clear consensus, find the highest confidence response
-  const bestResponse = consensusCount > 1 
-    ? validResponses.find(r => r.answer === mostCommonAnswer[0])
-    : validResponses.reduce((best, current) => 
+  // Find the best response based on consensus
+  const bestResponse = useOptionConsensus
+    ? validResponses.find(r => r.selectedOption === mostCommonAnswer[0])
+    : validResponses.find(r => r.answer === mostCommonAnswer[0]) ||
+      validResponses.reduce((best, current) => 
         (current.confidence || 0) > (best.confidence || 0) ? current : best
       );
 
   if (!bestResponse) return null;
 
+  const consensusCount = mostCommonAnswer[1];
+  const totalResponses = validResponses.length;
+  const consensusPercentage = (consensusCount / totalResponses) * 100;
   const isConsensus = consensusCount > 1;
   const agreementLevel = consensusPercentage >= 80 ? "strong" : 
                         consensusPercentage >= 60 ? "moderate" : "weak";
