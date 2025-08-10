@@ -3,7 +3,6 @@ import { Brain, Sparkles, Zap } from "lucide-react";
 import QueryInput from "@/components/QueryInput";
 import AIResponseCard, { AIResponse } from "@/components/AIResponseCard";
 import FinalRecommendation from "@/components/FinalRecommendation";
-import ApiKeyInput from "@/components/ApiKeyInput";
 import { aiService } from "@/services/aiService";
 import { toast } from "sonner";
 
@@ -14,30 +13,22 @@ const Index = () => {
   const [hasResults, setHasResults] = useState(false);
 
   useEffect(() => {
-    // Check for stored API key
-    const storedKey = localStorage.getItem("openrouter_api_key");
-    if (storedKey) {
-      setApiKey(storedKey);
-      aiService.setApiKey(storedKey);
-    }
+    // Hardcoded API key
+    const hardcodedKey = "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"; // <-- put your key here
+    localStorage.setItem("openrouter_api_key", hardcodedKey);
+    setApiKey(hardcodedKey);
+    aiService.setApiKey(hardcodedKey);
   }, []);
-
-  const handleApiKeySubmit = (key: string) => {
-    setApiKey(key);
-    localStorage.setItem("openrouter_api_key", key);
-    aiService.setApiKey(key);
-  };
 
   const handleQuery = async (query: string, imageFile?: File) => {
     if (!apiKey) {
-      toast.error("Please set up your API key first");
+      toast.error("API key not set");
       return;
     }
 
     setIsLoading(true);
     setHasResults(true);
-    
-    // Initialize loading states for all 10 models
+
     const loadingResponses: AIResponse[] = [
       { modelName: "Claude 3.5 Sonnet", answer: "", isLoading: true },
       { modelName: "GPT-4o", answer: "", isLoading: true },
@@ -50,18 +41,18 @@ const Index = () => {
       { modelName: "Phi 3.5 Vision", answer: "", isLoading: true },
       { modelName: "DeepSeek Chat", answer: "", isLoading: true },
     ];
-    
+
     setResponses(loadingResponses);
 
     try {
       const results = await aiService.processQuery(query, imageFile);
       setResponses(results);
-      
+
       const successCount = results.filter(r => !r.error).length;
       toast.success(`Received ${successCount} AI responses`);
     } catch (error) {
       console.error("Error processing query:", error);
-      toast.error("Failed to process query. Please check your API key and try again.");
+      toast.error("Failed to process query.");
       setResponses([]);
       setHasResults(false);
     } finally {
@@ -79,32 +70,12 @@ const Index = () => {
     }, {} as Record<string, number>);
 
     const maxCount = Math.max(...Object.values(answerCounts));
-    return maxCount > 1 ? Object.keys(answerCounts).find(answer => answerCounts[answer] === maxCount) : undefined;
+    return maxCount > 1
+      ? Object.keys(answerCounts).find(answer => answerCounts[answer] === maxCount)
+      : undefined;
   };
 
   const consensusAnswer = getConsensusAnswer();
-
-  if (!apiKey) {
-    return (
-      <div className="min-h-screen p-4 flex flex-col items-center justify-center">
-        <div className="w-full max-w-4xl mx-auto">
-          <div className="text-center mb-8 animate-fade-in">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Brain className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                AI Assignment Helper
-              </h1>
-            </div>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Get answers from 10 different AI models simultaneously. Perfect for assignments, MCQs, and academic questions.
-            </p>
-          </div>
-          
-          <ApiKeyInput onApiKeySubmit={handleApiKeySubmit} />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen p-4">
@@ -163,7 +134,6 @@ const Index = () => {
         {/* Results */}
         {hasResults && (
           <div className="space-y-6">
-            {/* AI Responses */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {responses.map((response, index) => (
                 <AIResponseCard
@@ -173,8 +143,6 @@ const Index = () => {
                 />
               ))}
             </div>
-
-            {/* Final Recommendation */}
             <FinalRecommendation responses={responses} />
           </div>
         )}
