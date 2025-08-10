@@ -25,9 +25,9 @@ const AI_MODELS = [
     displayName: "Gemini Pro 1.5"
   },
   {
-    id: "mistralai/mistral-large",
-    name: "Mistral Large",
-    displayName: "Mistral Large"
+    id: "meta-llama/llama-3.2-11b-vision-instruct",
+    name: "Llama 3.2 Vision",
+    displayName: "Llama 3.2 Vision"
   }
 ];
 
