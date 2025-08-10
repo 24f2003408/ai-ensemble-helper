@@ -10,24 +10,24 @@ const openai = new OpenAI({
 
 const AI_MODELS = [
   {
-    id: "anthropic/claude-3-sonnet",
-    name: "Claude 3 Sonnet",
-    displayName: "Claude 3 Sonnet"
+    id: "anthropic/claude-3.5-sonnet",
+    name: "Claude 3.5 Sonnet",
+    displayName: "Claude 3.5 Sonnet"
   },
   {
-    id: "openai/gpt-4-turbo",
-    name: "GPT-4 Turbo", 
-    displayName: "GPT-4 Turbo"
+    id: "openai/gpt-4o",
+    name: "GPT-4o", 
+    displayName: "GPT-4o"
   },
   {
-    id: "google/gemini-pro",
-    name: "Gemini Pro",
-    displayName: "Gemini Pro"
+    id: "google/gemini-pro-1.5",
+    name: "Gemini Pro 1.5",
+    displayName: "Gemini Pro 1.5"
   },
   {
-    id: "mistralai/mixtral-8x7b-instruct",
-    name: "Mixtral 8x7B",
-    displayName: "Mixtral 8x7B"
+    id: "mistralai/mistral-large",
+    name: "Mistral Large",
+    displayName: "Mistral Large"
   }
 ];
 
