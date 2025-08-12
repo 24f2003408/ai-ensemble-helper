@@ -1,81 +1,100 @@
-  // import { useState } from "react";
-  // import { Card } from "@/components/ui/card";
-  // import { Input } from "@/components/ui/input";
-  // import { Button } from "@/components/ui/button";
-  // import { Key, ExternalLink } from "lucide-react";
-  // import { toast } from "sonner";
+import { useState } from "react";
+import { Key, Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
-  // interface ApiKeyInputProps {
-  //   onApiKeySubmit: (apiKey: string) => void;
-  // }
+interface ApiKeyInputProps {
+  onApiKeySet: (apiKey: string) => void;
+  hasApiKey: boolean;
+}
 
-  // export default function ApiKeyInput({ onApiKeySubmit }: ApiKeyInputProps) {
-  //   const [apiKey, setApiKey] = useState("");
+const ApiKeyInput = ({ onApiKeySet, hasApiKey }: ApiKeyInputProps) => {
+  const [apiKey, setApiKey] = useState("");
+  const [showKey, setShowKey] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  //   const handleSubmit = () => {
-  //     if (!apiKey.trim()) {
-  //       toast.error("Please enter your OpenRouter API key");
-  //       return;
-  //     }
-  //     onApiKeySubmit(apiKey.trim());
-  //     toast.success("API key saved! You can now start asking questions.");
-  //   };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!apiKey.trim()) {
+      toast.error("Please enter a valid API key");
+      return;
+    }
 
-  //   return (
-  //     <Card className="w-full max-w-2xl mx-auto p-6 gradient-card shadow-card animate-fade-in">
-  //       <div className="text-center space-y-4">
-  //         <div className="flex items-center justify-center gap-2 mb-4">
-  //           <div className="p-2 bg-primary/10 rounded-lg">
-  //             <Key className="h-5 w-5 text-primary" />
-  //           </div>
-  //           <h2 className="text-xl font-semibold">Setup Required</h2>
-  //         </div>
-          
-  //         <p className="text-muted-foreground mb-6">
-  //           To use multiple AI models, please enter your OpenRouter API key. 
-  //           This gives you access to Claude, GPT-4, Gemini, and more.
-  //         </p>
+    setIsLoading(true);
+    try {
+      // Store securely in localStorage (in production, this should be handled via Supabase)
+      localStorage.setItem("openrouter_api_key", apiKey);
+      onApiKeySet(apiKey);
+      toast.success("API key saved successfully!");
+      setApiKey("");
+    } catch (error) {
+      toast.error("Failed to save API key");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  //         <div className="space-y-4">
-  //           <div className="space-y-2">
-  //             <label className="text-sm font-medium text-left block">
-  //               OpenRouter API Key
-  //             </label>
-  //             <Input
-  //               type="password"
-  //               placeholder="sk-or-v1-..."
-  //               value={apiKey}
-  //               onChange={(e) => setApiKey(e.target.value)}
-  //               className="border-2 focus:border-primary transition-smooth"
-  //             />
-  //           </div>
+  if (hasApiKey) {
+    return (
+      <Card className="gradient-card shadow-card border-0">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 text-success">
+            <Key className="h-4 w-4" />
+            <span className="text-sm font-medium">API Key Configured</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
-  //           <Button
-  //             onClick={handleSubmit}
-  //             className="w-full gradient-primary shadow-primary transition-smooth hover:opacity-90"
-  //           >
-  //             Save API Key & Continue
-  //           </Button>
-  //         </div>
+  return (
+    <Card className="gradient-card shadow-card border-0">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Key className="h-5 w-5 text-primary" />
+          Configure OpenRouter API Key
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="relative">
+            <Input
+              type={showKey ? "text" : "password"}
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="sk-or-v1-..."
+              className="pr-10"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
+              onClick={() => setShowKey(!showKey)}
+            >
+              {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </Button>
+          </div>
+          <Button type="submit" disabled={isLoading} className="w-full">
+            {isLoading ? "Saving..." : "Save API Key"}
+          </Button>
+          <p className="text-xs text-muted-foreground">
+            Get your API key from{" "}
+            <a
+              href="https://openrouter.ai/keys"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              OpenRouter
+            </a>
+          </p>
+        </form>
+      </CardContent>
+    </Card>
+  );
+};
 
-  //         <div className="pt-4 border-t border-border">
-  //           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-  //             <span>Don't have an OpenRouter account?</span>
-  //             <a
-  //               href="https://openrouter.ai/keys"
-  //               target="_blank"
-  //               rel="noopener noreferrer"
-  //               className="inline-flex items-center gap-1 text-primary hover:underline"
-  //             >
-  //               Get your API key here
-  //               <ExternalLink className="h-3 w-3" />
-  //             </a>
-  //           </div>
-  //           <p className="text-xs text-muted-foreground mt-2">
-  //             Your API key is stored locally and never sent to our servers
-  //           </p>
-  //         </div>
-  //       </div>
-  //     </Card>
-  //   );
-  // }
+export default ApiKeyInput;

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Brain, Sparkles, Zap } from "lucide-react";
+import { Brain, Sparkles, Zap, Cpu, Shield, Rocket } from "lucide-react";
 import QueryInput from "@/components/QueryInput";
 import AIResponseCard, { AIResponse } from "@/components/AIResponseCard";
 import FinalRecommendation from "@/components/FinalRecommendation";
+import ApiKeyInput from "@/components/ApiKeyInput";
 import { aiService } from "@/services/aiService";
 import { toast } from "sonner";
 
@@ -13,12 +14,18 @@ const Index = () => {
   const [hasResults, setHasResults] = useState(false);
 
   useEffect(() => {
-    // Hardcoded API key
-    const hardcodedKey = "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"; // <-- put your key here
-    localStorage.setItem("openrouter_api_key", hardcodedKey);
-    setApiKey(hardcodedKey);
-    aiService.setApiKey(hardcodedKey);
+    // Check for stored API key
+    const storedKey = localStorage.getItem("openrouter_api_key");
+    if (storedKey) {
+      setApiKey(storedKey);
+      aiService.setApiKey(storedKey);
+    }
   }, []);
+
+  const handleApiKeySet = (key: string) => {
+    setApiKey(key);
+    aiService.setApiKey(key);
+  };
 
   const handleQuery = async (query: string, imageFile?: File) => {
     if (!apiKey) {
@@ -78,63 +85,96 @@ const Index = () => {
   const consensusAnswer = getConsensusAnswer();
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="w-full max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Brain className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              AI Assignment Helper
-            </h1>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <div className="gradient-hero relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px]" />
+        <div className="relative z-10 container mx-auto px-4 py-16">
+          <div className="text-center animate-fade-in">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-sm shadow-glow">
+                <Brain className="h-10 w-10 text-white" />
+              </div>
+              <h1 className="text-5xl font-bold text-white">
+                AI Assignment Helper
+              </h1>
+            </div>
+            <p className="text-xl text-white/90 max-w-3xl mx-auto mb-8 leading-relaxed">
+              Harness the power of 10 cutting-edge AI models working in perfect harmony 
+              to solve your academic challenges with unprecedented accuracy
+            </p>
+            <div className="flex items-center justify-center gap-6 text-white/80">
+              <div className="flex items-center gap-2">
+                <Cpu className="h-5 w-5" />
+                <span>10 AI Models</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                <span>Smart Consensus</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Rocket className="h-5 w-5" />
+                <span>Instant Results</span>
+              </div>
+            </div>
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Get answers from 10 different AI models simultaneously and find the best solution
-          </p>
+        </div>
+      </div>
+
+      <div className="w-full max-w-6xl mx-auto px-4 -mt-8 relative z-20">
+
+        {/* API Key Configuration */}
+        <div className="mb-8">
+          <ApiKeyInput onApiKeySet={handleApiKeySet} hasApiKey={!!apiKey} />
         </div>
 
         {/* Features */}
-        {!hasResults && (
+        {!hasResults && apiKey && (
           <div className="grid md:grid-cols-3 gap-6 mb-8 animate-fade-in">
-            <div className="text-center p-4">
-              <div className="w-12 h-12 mx-auto mb-3 bg-primary/10 rounded-lg flex items-center justify-center">
-                <Brain className="h-6 w-6 text-primary" />
+            <div className="gradient-feature rounded-2xl p-6 text-center shadow-card hover:shadow-card-hover transition-smooth">
+              <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-2xl flex items-center justify-center">
+                <Brain className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="font-semibold mb-2">10 AI Models</h3>
-              <p className="text-sm text-muted-foreground">
-                Claude, GPT-4, Gemini, Llama, Qwen, and more working together
+              <h3 className="text-xl font-semibold mb-3 text-foreground">10 AI Models</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Claude, GPT-4, Gemini, Llama, Qwen, and more elite models collaborating 
+                to provide the most comprehensive answers
               </p>
             </div>
-            <div className="text-center p-4">
-              <div className="w-12 h-12 mx-auto mb-3 bg-success/10 rounded-lg flex items-center justify-center">
-                <Sparkles className="h-6 w-6 text-success" />
+            <div className="gradient-feature rounded-2xl p-6 text-center shadow-card hover:shadow-card-hover transition-smooth">
+              <div className="w-16 h-16 mx-auto mb-4 bg-success/10 rounded-2xl flex items-center justify-center">
+                <Sparkles className="h-8 w-8 text-success" />
               </div>
-              <h3 className="font-semibold mb-2">Smart Consensus</h3>
-              <p className="text-sm text-muted-foreground">
-                Automatically detects agreement and highlights the best answer
+              <h3 className="text-xl font-semibold mb-3 text-foreground">Smart Consensus</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Advanced algorithms analyze responses to identify patterns and 
+                highlight the most reliable answers
               </p>
             </div>
-            <div className="text-center p-4">
-              <div className="w-12 h-12 mx-auto mb-3 bg-warning/10 rounded-lg flex items-center justify-center">
-                <Zap className="h-6 w-6 text-warning" />
+            <div className="gradient-feature rounded-2xl p-6 text-center shadow-card hover:shadow-card-hover transition-smooth">
+              <div className="w-16 h-16 mx-auto mb-4 bg-warning/10 rounded-2xl flex items-center justify-center">
+                <Zap className="h-8 w-8 text-warning" />
               </div>
-              <h3 className="font-semibold mb-2">Image Support</h3>
-              <p className="text-sm text-muted-foreground">
-                Upload images with questions for visual problem solving
+              <h3 className="text-xl font-semibold mb-3 text-foreground">Visual Intelligence</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Upload images, diagrams, or screenshots for comprehensive 
+                visual problem-solving capabilities
               </p>
             </div>
           </div>
         )}
 
         {/* Query Input */}
-        <div className="mb-8">
-          <QueryInput onSubmit={handleQuery} isLoading={isLoading} />
-        </div>
+        {apiKey && (
+          <div className="mb-8">
+            <QueryInput onSubmit={handleQuery} isLoading={isLoading} />
+          </div>
+        )}
 
         {/* Results */}
-        {hasResults && (
-          <div className="space-y-6">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {hasResults && apiKey && (
+          <div className="space-y-8 animate-slide-up">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {responses.map((response, index) => (
                 <AIResponseCard
                   key={`${response.modelName}-${index}`}
