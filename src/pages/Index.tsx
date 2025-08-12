@@ -27,6 +27,10 @@ const Index = () => {
     aiService.setApiKey(key);
   };
 
+  const handleApiKeyClear = () => {
+    setApiKey(null);
+  };
+
   const handleQuery = async (query: string, imageFile?: File) => {
     if (!apiKey) {
       toast.error("API key not set");
@@ -42,11 +46,6 @@ const Index = () => {
       { modelName: "Gemini Pro 1.5", answer: "", isLoading: true },
       { modelName: "Llama 3.2 Vision", answer: "", isLoading: true },
       { modelName: "Claude 3 Haiku", answer: "", isLoading: true },
-      { modelName: "GPT-4o Mini", answer: "", isLoading: true },
-      { modelName: "Llama 3.2 90B Vision", answer: "", isLoading: true },
-      { modelName: "Qwen 2 VL 72B", answer: "", isLoading: true },
-      { modelName: "Phi 3.5 Vision", answer: "", isLoading: true },
-      { modelName: "DeepSeek Chat", answer: "", isLoading: true },
     ];
 
     setResponses(loadingResponses);
@@ -125,7 +124,7 @@ const Index = () => {
 
         {/* API Key Configuration */}
         <div className="mb-8">
-          <ApiKeyInput onApiKeySet={handleApiKeySet} hasApiKey={!!apiKey} />
+          <ApiKeyInput onApiKeySet={handleApiKeySet} onApiKeyClear={handleApiKeyClear} hasApiKey={!!apiKey} />
         </div>
 
         {/* Features */}

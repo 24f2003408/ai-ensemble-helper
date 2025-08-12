@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import { AIResponse } from '@/components/AIResponseCard';
 
 // OpenRouter configuration for multiple AI models
-const openai = new OpenAI({
+let openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: "temp", // Will be set dynamically via setApiKey
   dangerouslyAllowBrowser: true
@@ -66,8 +66,12 @@ export class AIService {
 
   setApiKey(apiKey: string) {
     this.apiKey = apiKey;
-    // Update the OpenAI client with the new API key
-    (openai as any).apiKey = apiKey;
+    // Create a new OpenAI client instance with the new API key
+    openai = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: apiKey,
+      dangerouslyAllowBrowser: true
+    });
   }
 
   async processQuery(query: string, imageFile?: File): Promise<AIResponse[]> {
